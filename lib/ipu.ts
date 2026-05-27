@@ -17,7 +17,7 @@ const BASE_HEADERS = {
 const COMMON_HEADERS = { ...BASE_HEADERS, 'Referer': 'https://examweb.ggsipu.ac.in/web/login.jsp' };
 const RESULTS_HEADERS = { ...BASE_HEADERS, 'Referer': 'https://examweb.ggsipu.ac.in/web/student/studenthome.jsp' };
 
-function makeAbortController(timeoutMs = 10_000): AbortController {
+function makeAbortController(timeoutMs = 8_000): AbortController {
   const ctrl = new AbortController();
   setTimeout(() => ctrl.abort(), timeoutMs);
   return ctrl;

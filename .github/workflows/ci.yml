@@ -20,7 +20,6 @@ jobs:
       - run: npm run lint
       - run: npm run build
         env:
-          # CI build runs without Upstash — rate limiter will allow all in non-production
-          NODE_ENV: development
+          RATE_LIMIT_BYPASS: '1'
       - name: Security audit
         run: npm audit --omit=dev --audit-level=high
