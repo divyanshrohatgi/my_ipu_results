@@ -1,32 +1,7 @@
 import type { NextConfig } from 'next';
 
-const isDev = process.env.NODE_ENV === 'development';
-
-// In dev, Next.js injects inline scripts and eval for HMR + source maps, and
-// opens a WebSocket back to the dev server. Relax those specific directives only.
-// In production (next build + next start / Vercel), the strict policy applies.
-const cspValue = isDev
-  ? [
-      "default-src 'self'",
-      "img-src 'self' data:",
-      "style-src 'self' 'unsafe-inline'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "connect-src 'self' ws: wss:",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join('; ')
-  : [
-      "default-src 'self'",
-      "img-src 'self' data:",
-      "style-src 'self' 'unsafe-inline'",
-      "script-src 'self'",
-      "connect-src 'self'",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join('; ');
-
+// Note: Content-Security-Policy is set per-request in proxy.ts (it needs a
+// fresh nonce each request). The static headers below apply to every route.
 const securityHeaders = [
   {
     key: 'Strict-Transport-Security',
@@ -47,10 +22,6 @@ const securityHeaders = [
   {
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-  },
-  {
-    key: 'Content-Security-Policy',
-    value: cspValue,
   },
 ];
 

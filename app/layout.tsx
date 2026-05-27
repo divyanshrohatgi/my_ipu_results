@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: 'Unofficial result viewer for Guru Gobind Singh Indraprastha University students.',
 };
 
+// Nonce-based CSP (see proxy.ts) requires per-request SSR so Next.js can stamp
+// the nonce onto its scripts. Opt the whole app out of static prerendering.
+export const dynamic = 'force-dynamic';
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
