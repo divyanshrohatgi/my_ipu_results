@@ -1,4 +1,4 @@
-GGSIPU Result Viewer – Personal Project Documentation
+
 Overview
 This is a personal project I built to view and calculate my GGSIPU (Guru Gobind Singh Indraprastha University) exam results in a cleaner, more user-friendly way than the official portal. The official university website is clunky and hard to use, so I created this Next.js app that acts as a secure middleman between my browser and the IPU exam portal.
 
