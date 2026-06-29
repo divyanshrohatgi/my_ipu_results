@@ -107,4 +107,14 @@ export const PAPER_CREDITS: Record<string, PaperMeta> = {
   // ===== Semester 8 (Total: 20 credits) =====
   'AIDS456':  { credits: 18 }, // Internship Report and Viva Voce
   'AIDS458':  { credits: 2 },  // Internship Progress Evaluation
+
+  // ===== BA(JMC) Semester 2 (Total: 20 credits) =====
+  // Portal returns codes with dashes/parens stripped: BA(JMC)-202 -> BAJMC202.
+  'BAJMC202': { credits: 3 },   // Advertising: Concepts and Practices
+  'BAJMC204': { credits: 3 },   // Public Relations: Concepts and Practices
+  'BAJMC206': { credits: 3 },   // Television Programming and Production
+  'BAJMC208': { credits: 3 },   // Corporate Communication
+  'BAJMC210': { credits: 3 },   // Television News: Reporting and Anchoring
+  'BAJMC212': { credits: 3 },   // Digital Media – Tools and Techniques
+  'BAJMC214': { credits: 2 },   // India Knowledge System (IKS)
 };
