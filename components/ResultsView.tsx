@@ -54,7 +54,7 @@ export default function ResultsView({ sessionId, onLogout }: ResultsViewProps) {
 
       // Only compute the full analysis from the complete dataset
       if (sem === '100') {
-        setFullAnalysis(analyzeResults(portalData.stresult as ResultRow[]));
+        setFullAnalysis(analyzeResults(portalData.stresult as ResultRow[], portalData.stprofile.yoa));
       }
     } catch {
       setError('Could not reach the server. Please try again.');

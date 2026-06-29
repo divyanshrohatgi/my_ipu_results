@@ -1,5 +1,5 @@
 import type { ResultRow } from '../types/result';
-import { PAPER_CREDITS, type PaperMeta } from './credits';
+import { creditsForBatch, type PaperMeta } from './credits';
 
 export type { PaperMeta };
 
@@ -120,8 +120,11 @@ export function calculateCGPA(allGraded: GradedPaper[]): number | null {
   return +(numerator / denominator).toFixed(2);
 }
 
-// Top-level orchestrator: deduplicate → group by semester → grade → compute GPA
-export function analyzeResults(stresult: ResultRow[]): ResultsAnalysis {
+// Top-level orchestrator: deduplicate → group by semester → grade → compute GPA.
+// `yoa` (year of admission) selects the correct credit scheme — BA(JMC) reuses
+// paper codes across its 2022 CBCS and NEP schemes with different credit values.
+export function analyzeResults(stresult: ResultRow[], yoa: number): ResultsAnalysis {
+  const credits = creditsForBatch(yoa);
   const deduplicated = deduplicateRows(stresult);
 
   const bySem = new Map<number, ResultRow[]>();
@@ -135,7 +138,7 @@ export function analyzeResults(stresult: ResultRow[]): ResultsAnalysis {
   const allGraded: GradedPaper[] = [];
 
   for (const [sem, semRows] of Array.from(bySem.entries()).sort((a, b) => a[0] - b[0])) {
-    const { graded, unmappedPapers } = gradeRows(semRows, PAPER_CREDITS);
+    const { graded, unmappedPapers } = gradeRows(semRows, credits);
     const sgpa = calculateSGPA(graded);
     const totalCredits   = graded.reduce((s, r) => s + r.credits, 0);
     const earnedCredits  = graded.filter(r => r.gradePoints >= 4).reduce((s, r) => s + r.credits, 0);

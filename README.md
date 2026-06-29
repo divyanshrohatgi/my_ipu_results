@@ -70,17 +70,35 @@ Copy the REST URL and token from the dashboard
 Add them as environment variables in Vercel
 
 GPA/CGPA Calculation
-The lib/credits.ts file maps paper codes to credit values. It starts empty, and I need to fill it in for my specific programme to enable CGPA/SGPA calculations:
+The lib/credits.ts file maps paper codes to credit values. Codes use the portal format with dashes and parentheses stripped (e.g. BA(JMC)-202 becomes BAJMC202).
+
+Because some programmes reuse the same paper codes across different syllabus versions with different credits (e.g. BA(JMC) BAJMC101 is 4 credits under the 2022 CBCS scheme but 3 credits under the 2025 NEP scheme), the map is keyed by scheme rather than being one flat object:
 
 ts
 // lib/credits.ts
-export const CREDITS = {
-  "AIDS101": { credits: 4 },
-  "AIDS101L": { credits: 2 },
-  "AIDS102": { credits: 4 },
-  // ... add all my papers here
+const CREDIT_MAP = {
+  BTECH:      { "ES101": { credits: 3 }, /* … AIDS B.Tech base */ },
+  BAJMC_NEP:  { "BAJMC101": { credits: 3 }, /* … 2024+ batches, 8-sem honours */ },
+  BAJMC_2022: { "BAJMC101": { credits: 4 }, /* … 2022–23 batches, 6-sem CBCS */ },
 };
-Any paper not in this map gets excluded from GPA calculations and shows a warning below the semester table.
+The right scheme is chosen automatically per student by year of admission (stprofile.yoa):
+
+ts
+export function creditsForBatch(yoa: number) {
+  switch (yoa) {
+    case 2022:
+    case 2023:
+      return { ...CREDIT_MAP.BTECH, ...CREDIT_MAP.BAJMC_2022 };
+    case 2024:
+    case 2025:
+      return { ...CREDIT_MAP.BTECH, ...CREDIT_MAP.BAJMC_NEP };
+    default: // future batches stay on NEP until a newer curriculum is added
+      return { ...CREDIT_MAP.BTECH, ...CREDIT_MAP.BAJMC_NEP };
+  }
+}
+Batch years are listed explicitly rather than with yoa >= 2024 on purpose: when IPU introduces the next scheme, the default would silently keep new batches on NEP credits — which may be wrong — so the next maintainer must add an explicit case pointing at the new map.
+
+analyzeResults(stresult, yoa) calls this, so the credit set follows the batch with no manual configuration. To add a programme, add a scheme key (or extend an existing one) and add the relevant batch years as cases in creditsForBatch. Any paper not in the resolved map gets excluded from GPA calculations and shows a warning below the semester table.
 
 Security
 What I'm Protecting Against
